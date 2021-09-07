@@ -1,4 +1,4 @@
-package v1alpha1
+package v1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -6,8 +6,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-const GroupName = "example.martin-helmich.de"
-const GroupVersion = "v1alpha1"
+const GroupName = "eventing.knative.dev"
+const GroupVersion = "v1"
 
 var SchemeGroupVersion = schema.GroupVersion{Group: GroupName, Version: GroupVersion}
 
@@ -18,8 +18,8 @@ var (
 
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&Project{},
-		&ProjectList{},
+		&Broker{},
+		&BrokerList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
