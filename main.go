@@ -44,7 +44,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("brokers found: %+v\n", projects)
 
-	fmt.Printf("projects found: %+v\n", projects)
+	NewBroker := &v1.Broker{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "sslconfigobj",
+			Labels: map[string]string{"mylabel": "test"},
+		},
+	}
+	resp, err := clientSet.Brokers("default").Create(NewBroker)
+
+	if err != nil {
+		fmt.Printf("error while creating object: %v\n", err)
+	} else {
+		fmt.Printf("object created: %v\n", resp)
+	}
 
 }
