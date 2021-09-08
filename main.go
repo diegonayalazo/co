@@ -40,11 +40,11 @@ func main() {
 		panic(err)
 	}
 
-	projects, err := clientSet.Brokers("default").List(metav1.ListOptions{})
+	brokers, err := clientSet.Brokers("default").List(metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("brokers found: %+v\n", projects)
+	fmt.Printf("brokers found: %+v\n", brokers)
 
 	NewBroker := &v1.Broker{
 		ObjectMeta: metav1.ObjectMeta{
@@ -52,6 +52,7 @@ func main() {
 			Labels: map[string]string{"mylabel": "test"},
 		},
 	}
+	fmt.Println("creating brokers")
 	resp, err := clientSet.Brokers("default").Create(NewBroker)
 
 	if err != nil {
