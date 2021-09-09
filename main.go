@@ -7,7 +7,6 @@ import (
 
 	v1 "github.com/diegonayalazo/co/api/types/v1"
 	clientV1 "github.com/diegonayalazo/co/clientset/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -40,25 +39,8 @@ func main() {
 		panic(err)
 	}
 
-	brokers, err := clientSet.Brokers("default").List(metav1.ListOptions{})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("brokers found: %+v\n", brokers)
-
-	NewBroker := &v1.Broker{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:   "sslconfigobj",
-			Labels: map[string]string{"mylabel": "test"},
-		},
-	}
-	fmt.Println("creating brokers")
-	resp, err := clientSet.Brokers("default").Create(NewBroker)
-
-	if err != nil {
-		fmt.Printf("error while creating object: %v\n", err)
-	} else {
-		fmt.Printf("object created: %v\n", resp)
-	}
+	listBroker(*clientSet)
+	createBroker(*clientSet)
+	patchBroker(*clientSet)
 
 }
