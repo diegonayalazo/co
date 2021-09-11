@@ -21,7 +21,7 @@ func createBroker(clientSet clientV1.ExampleV1Client) {
 
 	NewBroker := &v1.Broker{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   "broker",
+			Name:   "conformance-broker",
 			Labels: map[string]string{"mylabel": "test"},
 		},
 	}
@@ -37,8 +37,8 @@ func createBroker(clientSet clientV1.ExampleV1Client) {
 }
 func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte) {
 
-	fmt.Println("patch with %q", patch)
-	resp, err := clientSet.Brokers("default").Patch("conformance-broker", types.MergePatchType, patch, metav1.PatchOptions{})
+	fmt.Printf("patch with %q", patch)
+	resp, err := clientSet.Brokers("broker").Patch("conformance-broker", types.MergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
 		fmt.Printf("error while patching broker: %v\n", err)
 	} else {
