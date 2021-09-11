@@ -88,7 +88,7 @@ func (c *projectClient) Patch(name string, pt types.PatchType, data []byte, opts
 func (c *projectClient) Delete(name string, opts metav1.DeleteOptions) error {
 	return c.restClient.Delete().
 		Namespace(c.ns).
-		Resource("pods").
+		Resource("brokers").
 		Name(name).
 		Body(&opts).
 		Do(context.TODO()).

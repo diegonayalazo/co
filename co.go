@@ -35,37 +35,13 @@ func createBroker(clientSet clientV1.ExampleV1Client) {
 	}
 
 }
-func patchBroker(clientSet clientV1.ExampleV1Client) {
-	//kubectl patch broker conformance-broker --type merge -p '{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}'
-	patch := []byte(`{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}`)
+func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte) {
 
-	/*	payload := []patchUInt32Value{{
-			Op:    "replace",
-			Path:  "/spec/replicas",
-			Value: scale,
-		}}
-
-		payloadBytes, _ := json.Marshal(payload)
-	*/
-	fmt.Println("patching brokers")
+	fmt.Println("patch with %q", patch)
 	resp, err := clientSet.Brokers("default").Patch("conformance-broker", types.MergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
 		fmt.Printf("error while patching broker: %v\n", err)
 	} else {
 		fmt.Printf("object patched: %v\n", resp)
 	}
-}
-
-//  patchStringValue specifies a patch operation for a string.
-type patchStringValue struct {
-	Op    string `json:"op"`
-	Path  string `json:"path"`
-	Value string `json:"value"`
-}
-
-//  patchUint32Value specifies a patch operation for a uint32.
-type patchUInt32Value struct {
-	Op    string `json:"op"`
-	Path  string `json:"path"`
-	Value uint32 `json:"value"`
 }

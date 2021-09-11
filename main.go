@@ -41,6 +41,12 @@ func main() {
 
 	listBroker(*clientSet)
 	createBroker(*clientSet)
-	patchBroker(*clientSet)
+	//kubectl patch broker conformance-broker --type merge -p '{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}'
+
+	patchBroker(*clientSet, []byte(`{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}`))
+
+	//kubectl patch broker conformance-broker --type merge -p '{"spec":{"config":{"apiVersion":"v1"}}}'
+
+	patchBroker(*clientSet, []byte(`{"spec":{"config":{"apiVersion":"v1"}}}`))
 
 }
