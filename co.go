@@ -17,11 +17,11 @@ func listBroker(clientSet clientV1.ExampleV1Client, namespace string) {
 	fmt.Printf("brokers in namespace : %+v found: %+v\n", namespace, brokers)
 }
 
-func createBroker(clientSet clientV1.ExampleV1Client, namespace string) {
+func createBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerName string) {
 
 	NewBroker := &v1.Broker{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   "conformance-broker",
+			Name:   brokerName,
 			Labels: map[string]string{"mylabel": "test"},
 		},
 	}
@@ -36,10 +36,10 @@ func createBroker(clientSet clientV1.ExampleV1Client, namespace string) {
 	}
 
 }
-func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte, namespace string) {
+func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte, namespace string, brokerName string) {
 
 	fmt.Printf("patch with %q", patch)
-	resp, err := clientSet.Brokers(namespace).Patch("conformance-broker", types.MergePatchType, patch, metav1.PatchOptions{})
+	resp, err := clientSet.Brokers(namespace).Patch(brokerName, types.MergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
 		fmt.Printf("error while patching broker: %v\n", err)
 	} else {

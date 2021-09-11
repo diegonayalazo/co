@@ -39,15 +39,15 @@ func main() {
 		panic(err)
 	}
 	namespace := "default"
-
+	brokerName := "conformance-broker"
 	listBroker(*clientSet, namespace)
-	createBroker(*clientSet, namespace)
+	createBroker(*clientSet, namespace, brokerName)
 	//kubectl patch broker conformance-broker --type merge -p '{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}'
 
-	patchBroker(*clientSet, []byte(`{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}`), namespace)
+	patchBroker(*clientSet, []byte(`{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}`), namespace, brokerName)
 
 	//kubectl patch broker conformance-broker --type merge -p '{"spec":{"config":{"apiVersion":"v1"}}}'
 
-	patchBroker(*clientSet, []byte(`{"spec":{"config":{"apiVersion":"v1"}}}`))
+	patchBroker(*clientSet, []byte(`{"spec":{"config":{"apiVersion":"v1"}}}`), namespace, brokerName)
 
 }
