@@ -9,15 +9,15 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
-func listBroker(clientSet clientV1.ExampleV1Client) {
-	brokers, err := clientSet.Brokers("default").List(metav1.ListOptions{})
+func listBroker(clientSet clientV1.ExampleV1Client, namespace string) {
+	brokers, err := clientSet.Brokers(namespace).List(metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("brokers found: %+v\n", brokers)
+	fmt.Printf("brokers in namespace : %+v found: %+v\n", namespace, brokers)
 }
 
-func createBroker(clientSet clientV1.ExampleV1Client) {
+func createBroker(clientSet clientV1.ExampleV1Client, namespace string) {
 
 	NewBroker := &v1.Broker{
 		ObjectMeta: metav1.ObjectMeta{
@@ -26,7 +26,8 @@ func createBroker(clientSet clientV1.ExampleV1Client) {
 		},
 	}
 	fmt.Println("creating brokers")
-	resp, err := clientSet.Brokers("default").Create(NewBroker)
+	//en namespace default
+	resp, err := clientSet.Brokers(namespace).Create(NewBroker)
 
 	if err != nil {
 		fmt.Printf("error while creating broker: %v\n", err)
@@ -35,10 +36,10 @@ func createBroker(clientSet clientV1.ExampleV1Client) {
 	}
 
 }
-func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte) {
+func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte, namespace string) {
 
 	fmt.Printf("patch with %q", patch)
-	resp, err := clientSet.Brokers("broker").Patch("conformance-broker", types.MergePatchType, patch, metav1.PatchOptions{})
+	resp, err := clientSet.Brokers(namespace).Patch("conformance-broker", types.MergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
 		fmt.Printf("error while patching broker: %v\n", err)
 	} else {
