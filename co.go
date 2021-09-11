@@ -46,3 +46,15 @@ func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte, namespace str
 		fmt.Printf("object patched: %v\n", resp)
 	}
 }
+
+func deleteBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerName string) {
+	deleteOptions := metav1.DeleteOptions{}
+	fmt.Println("deleting brokers")
+	//en namespace default
+	err := clientSet.Brokers(namespace).Delete(brokerName, deleteOptions)
+
+	if err != nil {
+		fmt.Printf("error while deleting broker: %v\n", err)
+	}
+
+}

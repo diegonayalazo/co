@@ -50,4 +50,5 @@ func main() {
 
 	patchBroker(*clientSet, []byte(`{"spec":{"config":{"apiVersion":"v1"}}}`), namespace, brokerName)
 
+	deleteBroker(*clientSet, namespace, brokerName)
 }
