@@ -38,7 +38,7 @@ func createBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerNa
 }
 func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte, namespace string, brokerName string) {
 
-	fmt.Printf("patch with %q", patch)
+	fmt.Printf("patch with %q\n", patch)
 	resp, err := clientSet.Brokers(namespace).Patch(brokerName, types.MergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
 		fmt.Printf("error while patching broker: %v\n", err)
@@ -55,6 +55,19 @@ func deleteBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerNa
 
 	if err != nil {
 		fmt.Printf("error while deleting broker: %v\n", err)
+	}
+}
+
+func getBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerName string) {
+
+	fmt.Println("getting brokers")
+	//en namespace default
+	resp, err := clientSet.Brokers(namespace).Get(brokerName, metav1.GetOptions{})
+
+	if err != nil {
+		fmt.Printf("error while getting broker: %v\n", err)
+	} else {
+		fmt.Printf("object got: %v\n", resp)
 	}
 
 }

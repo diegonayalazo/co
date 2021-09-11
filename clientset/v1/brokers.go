@@ -84,7 +84,7 @@ func (c *projectClient) Patch(name string, pt types.PatchType, data []byte, opts
 	return
 }
 
-// Delete takes name of the pod and deletes it. Returns an error if one occurs.
+// Delete takes name of the broker and deletes it. Returns an error if one occurs.
 func (c *projectClient) Delete(name string, opts metav1.DeleteOptions) error {
 	return c.restClient.Delete().
 		Namespace(c.ns).
