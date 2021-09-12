@@ -40,6 +40,8 @@ func main() {
 	}
 	namespace := "default"
 	brokerName := "conformance-broker"
+	triggerName := "conformance-trigger"
+	uri := "http://events-counter-service.default.svc.cluster.local/events"
 	listBroker(*clientSet, namespace)
 	createBroker(*clientSet, namespace, brokerName)
 	//kubectl patch broker conformance-broker --type merge -p '{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}'
@@ -50,7 +52,19 @@ func main() {
 
 	patchBroker(*clientSet, []byte(`{"spec":{"config":{"apiVersion":"v1"}}}`), namespace, brokerName)
 
+	// kubectl get broker conformance-broker -ojsonpath="{.status.conditions[?(@.type == \"Ready\")].status}"
+
 	getBroker(*clientSet, namespace, brokerName)
+
+	//kubectl get broker conformance-broker -ojsonpath="{.status.address.url}"
+
+	//kubectl apply -f control-plane/broker-lifecycle/trigger.yaml
+	createTrigger(*clientSet, namespace, triggerName, brokerName, uri)
+
+	//kubectl get trigger conformance-trigger -ojsonpath="{.spec.broker}"
+	getTrigger(*clientSet, namespace, triggerName)
+	//kubectl get trigger conformance-trigger -ojsonpath="{.status.conditions[?(@.type == \"Ready\")].status}"
+
 	//cleanup
 	deleteBroker(*clientSet, namespace, brokerName)
 }

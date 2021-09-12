@@ -70,7 +70,6 @@ func (c *brokerClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
 	return c.restClient.Get().Namespace(c.ns).Resource("brokers").VersionedParams(&opts, scheme.ParameterCodec).Watch(context.TODO())
 }
 
-// Patch applies the patch and returns the patched pod.
 func (c *brokerClient) Patch(name string, pt types.PatchType, data []byte, opts metav1.PatchOptions) (result *v1.Broker, err error) {
 	result = &v1.Broker{}
 	err = c.restClient.Patch(pt).

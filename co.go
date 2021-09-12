@@ -98,3 +98,17 @@ func createTrigger(clientSet clientV1.ExampleV1Client, namespace string, trigger
 	}
 
 }
+
+func getTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerName string) {
+
+	fmt.Println("getting triggers")
+	//en namespace default
+	resp, err := clientSet.Triggers(namespace).Get(triggerName, metav1.GetOptions{})
+
+	if err != nil {
+		fmt.Printf("error while getting trigger: %v\n", err)
+	} else {
+		fmt.Printf("object got: %v\n", resp)
+	}
+
+}
