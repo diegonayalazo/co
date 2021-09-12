@@ -66,5 +66,7 @@ func main() {
 	//kubectl get trigger conformance-trigger -ojsonpath="{.status.conditions[?(@.type == \"Ready\")].status}"
 
 	//cleanup
+	deleteTrigger(*clientSet, namespace, triggerName)
 	deleteBroker(*clientSet, namespace, brokerName)
+
 }

@@ -112,3 +112,14 @@ func getTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerNam
 	}
 
 }
+
+func deleteTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerName string) {
+	deleteOptions := metav1.DeleteOptions{}
+	fmt.Println("deleting trigger")
+	//en namespace default
+	err := clientSet.Triggers(namespace).Delete(triggerName, deleteOptions)
+
+	if err != nil {
+		fmt.Printf("error while deleting broker: %v\n", err)
+	}
+}
