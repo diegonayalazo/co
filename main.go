@@ -57,14 +57,14 @@ func main() {
 	getBroker(*clientSet, namespace, brokerName)
 
 	//kubectl get broker conformance-broker -ojsonpath="{.status.address.url}"
-
+	getBrokerPath(*clientSet, namespace, brokerName, "{.status.address.url}")
 	//kubectl apply -f control-plane/broker-lifecycle/trigger.yaml
 	createTrigger(*clientSet, namespace, triggerName, brokerName, uri)
 
 	//kubectl get trigger conformance-trigger -ojsonpath="{.spec.broker}"
-	getTrigger(*clientSet, namespace, triggerName)
+	getTriggerPath(*clientSet, namespace, triggerName, "{.spec.broker}")
 	//kubectl get trigger conformance-trigger -ojsonpath="{.status.conditions[?(@.type == \"Ready\")].status}"
-
+	getTriggerPath(*clientSet, namespace, triggerName, "{.status.conditions[?(@.type == \"Ready\")].status}")
 	//cleanup
 	deleteTrigger(*clientSet, namespace, triggerName)
 	deleteBroker(*clientSet, namespace, brokerName)

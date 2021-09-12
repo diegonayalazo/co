@@ -49,12 +49,14 @@ func patchBroker(clientSet clientV1.ExampleV1Client, patch []byte, namespace str
 
 func deleteBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerName string) {
 	deleteOptions := metav1.DeleteOptions{}
-	fmt.Println("deleting brokers")
+	fmt.Printf("deleting broker: %q\n", brokerName)
 	//en namespace default
 	err := clientSet.Brokers(namespace).Delete(brokerName, deleteOptions)
 
 	if err != nil {
 		fmt.Printf("error while deleting broker: %v\n", err)
+	} else {
+		fmt.Printf("delete %q success: \n", brokerName)
 	}
 }
 
@@ -113,13 +115,41 @@ func getTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerNam
 
 }
 
+func getTriggerPath(clientSet clientV1.ExampleV1Client, namespace string, triggerName string, jsonpath string) {
+
+	fmt.Printf("getting triggers with path %q'\n", jsonpath)
+	//en namespace default
+	resp, err := clientSet.Triggers(namespace).GetPath(triggerName, metav1.GetOptions{}, jsonpath)
+
+	if err != nil {
+		fmt.Printf("error while getting trigger: %v\n", err)
+	} else {
+		fmt.Printf("json path: %v\n", resp)
+	}
+
+}
+
 func deleteTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerName string) {
 	deleteOptions := metav1.DeleteOptions{}
-	fmt.Println("deleting trigger")
+	fmt.Printf("deleting trigger; %q\n", triggerName)
 	//en namespace default
 	err := clientSet.Triggers(namespace).Delete(triggerName, deleteOptions)
 
 	if err != nil {
 		fmt.Printf("error while deleting broker: %v\n", err)
 	}
+}
+
+func getBrokerPath(clientSet clientV1.ExampleV1Client, namespace string, brokerName string, jsonpath string) {
+
+	fmt.Printf("getting brokers with path %q'\n", jsonpath)
+	//en namespace default
+	resp, err := clientSet.Brokers(namespace).GetPath(brokerName, metav1.GetOptions{}, jsonpath)
+
+	if err != nil {
+		fmt.Printf("error while getting broker: %v\n", err)
+	} else {
+		fmt.Printf("broker json path: %v\n", resp)
+	}
+
 }

@@ -14,6 +14,7 @@ import (
 type BrokerInterface interface {
 	List(opts metav1.ListOptions) (*v1.BrokerList, error)
 	Get(name string, options metav1.GetOptions) (*v1.Broker, error)
+	GetPath(name string, options metav1.GetOptions, jsonpath string) (string, error)
 	Create(*v1.Broker) (*v1.Broker, error)
 	Watch(opts metav1.ListOptions) (watch.Interface, error)
 	Patch(name string, pt types.PatchType, data []byte, opts metav1.PatchOptions) (result *v1.Broker, err error)
@@ -92,4 +93,17 @@ func (c *brokerClient) Delete(name string, opts metav1.DeleteOptions) error {
 		Body(&opts).
 		Do(context.TODO()).
 		Error()
+}
+
+func (c *brokerClient) GetPath(name string, opts metav1.GetOptions, path string) (string, error) {
+
+	result, err := c.restClient.
+		Get().
+		AbsPath(path).
+		Namespace(c.ns).
+		Resource("brokers").
+		Name(name).
+		VersionedParams(&opts, scheme.ParameterCodec).DoRaw(context.TODO())
+
+	return string(result), err
 }

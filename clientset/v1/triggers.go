@@ -14,6 +14,7 @@ import (
 type TriggerInterface interface {
 	List(opts metav1.ListOptions) (*v1.TriggerList, error)
 	Get(name string, options metav1.GetOptions) (*v1.Trigger, error)
+	GetPath(name string, options metav1.GetOptions, path string) (string, error)
 	Create(*v1.Trigger) (*v1.Trigger, error)
 	Watch(opts metav1.ListOptions) (watch.Interface, error)
 	Patch(name string, pt types.PatchType, data []byte, opts metav1.PatchOptions) (result *v1.Trigger, err error)
@@ -49,6 +50,19 @@ func (c *triggerClient) Get(name string, opts metav1.GetOptions) (*v1.Trigger, e
 		Into(&result)
 
 	return &result, err
+}
+
+func (c *triggerClient) GetPath(name string, opts metav1.GetOptions, path string) (string, error) {
+
+	result, err := c.restClient.
+		Get().
+		AbsPath(path).
+		Namespace(c.ns).
+		Resource("triggers").
+		Name(name).
+		VersionedParams(&opts, scheme.ParameterCodec).DoRaw(context.TODO())
+
+	return string(result), err
 }
 
 func (c *triggerClient) Create(project *v1.Trigger) (*v1.Trigger, error) {
