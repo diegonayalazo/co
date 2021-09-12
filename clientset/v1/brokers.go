@@ -20,12 +20,12 @@ type BrokerInterface interface {
 	Delete(name string, opts metav1.DeleteOptions) error
 }
 
-type projectClient struct {
+type brokerClient struct {
 	restClient rest.Interface
 	ns         string
 }
 
-func (c *projectClient) List(opts metav1.ListOptions) (*v1.BrokerList, error) {
+func (c *brokerClient) List(opts metav1.ListOptions) (*v1.BrokerList, error) {
 	result := v1.BrokerList{}
 	err := c.restClient.
 		Get().
@@ -38,7 +38,7 @@ func (c *projectClient) List(opts metav1.ListOptions) (*v1.BrokerList, error) {
 	return &result, err
 }
 
-func (c *projectClient) Get(name string, opts metav1.GetOptions) (*v1.Broker, error) {
+func (c *brokerClient) Get(name string, opts metav1.GetOptions) (*v1.Broker, error) {
 	result := v1.Broker{}
 	err := c.restClient.
 		Get().
@@ -52,7 +52,7 @@ func (c *projectClient) Get(name string, opts metav1.GetOptions) (*v1.Broker, er
 	return &result, err
 }
 
-func (c *projectClient) Create(project *v1.Broker) (*v1.Broker, error) {
+func (c *brokerClient) Create(project *v1.Broker) (*v1.Broker, error) {
 	result := v1.Broker{}
 	err := c.restClient.
 		Post().
@@ -65,13 +65,13 @@ func (c *projectClient) Create(project *v1.Broker) (*v1.Broker, error) {
 	return &result, err
 }
 
-func (c *projectClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
+func (c *brokerClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
 	opts.Watch = true
 	return c.restClient.Get().Namespace(c.ns).Resource("brokers").VersionedParams(&opts, scheme.ParameterCodec).Watch(context.TODO())
 }
 
 // Patch applies the patch and returns the patched pod.
-func (c *projectClient) Patch(name string, pt types.PatchType, data []byte, opts metav1.PatchOptions) (result *v1.Broker, err error) {
+func (c *brokerClient) Patch(name string, pt types.PatchType, data []byte, opts metav1.PatchOptions) (result *v1.Broker, err error) {
 	result = &v1.Broker{}
 	err = c.restClient.Patch(pt).
 		Namespace(c.ns).
@@ -85,7 +85,7 @@ func (c *projectClient) Patch(name string, pt types.PatchType, data []byte, opts
 }
 
 // Delete takes name of the broker and deletes it. Returns an error if one occurs.
-func (c *projectClient) Delete(name string, opts metav1.DeleteOptions) error {
+func (c *brokerClient) Delete(name string, opts metav1.DeleteOptions) error {
 	return c.restClient.Delete().
 		Namespace(c.ns).
 		Resource("brokers").

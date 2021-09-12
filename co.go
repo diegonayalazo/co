@@ -71,3 +71,30 @@ func getBroker(clientSet clientV1.ExampleV1Client, namespace string, brokerName 
 	}
 
 }
+
+func createTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerName string, brokerName string, uri string) {
+
+	NewTrigger := &v1.Trigger{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   triggerName,
+			Labels: map[string]string{"mylabel": "test"},
+		},
+		Spec: v1.TriggerSpec{
+			Broker: brokerName,
+			TriggerSubscriber: v1.TriggerSub{
+				Uri: uri,
+			},
+		},
+	}
+
+	fmt.Println("creating trigger")
+	//en namespace default
+	resp, err := clientSet.Triggers(namespace).Create(NewTrigger)
+
+	if err != nil {
+		fmt.Printf("error while creating broker: %v\n", err)
+	} else {
+		fmt.Printf("object created: %v\n", resp)
+	}
+
+}

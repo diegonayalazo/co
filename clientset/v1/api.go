@@ -9,6 +9,7 @@ import (
 
 type ExampleV1Interface interface {
 	Brokers(namespace string) BrokerInterface
+	Triggers(namespace string) TriggerInterface
 }
 
 type ExampleV1Client struct {
@@ -31,7 +32,14 @@ func NewForConfig(c *rest.Config) (*ExampleV1Client, error) {
 }
 
 func (c *ExampleV1Client) Brokers(namespace string) BrokerInterface {
-	return &projectClient{
+	return &brokerClient{
+		restClient: c.restClient,
+		ns:         namespace,
+	}
+}
+
+func (c *ExampleV1Client) Triggers(namespace string) TriggerInterface {
+	return &triggerClient{
 		restClient: c.restClient,
 		ns:         namespace,
 	}
