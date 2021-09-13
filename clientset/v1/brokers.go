@@ -99,7 +99,6 @@ func (c *brokerClient) GetPath(name string, opts metav1.GetOptions, path string)
 
 	result, err := c.restClient.
 		Get().
-		AbsPath(path).
 		Namespace(c.ns).
 		Resource("brokers").
 		Name(name).

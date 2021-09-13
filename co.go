@@ -90,7 +90,7 @@ func createTrigger(clientSet clientV1.ExampleV1Client, namespace string, trigger
 	}
 
 	fmt.Println("creating trigger")
-	//en namespace default
+
 	resp, err := clientSet.Triggers(namespace).Create(NewTrigger)
 
 	if err != nil {
@@ -118,7 +118,7 @@ func getTrigger(clientSet clientV1.ExampleV1Client, namespace string, triggerNam
 func getTriggerPath(clientSet clientV1.ExampleV1Client, namespace string, triggerName string, jsonpath string) {
 
 	fmt.Printf("getting triggers with path %q'\n", jsonpath)
-	//en namespace default
+
 	resp, err := clientSet.Triggers(namespace).GetPath(triggerName, metav1.GetOptions{}, jsonpath)
 
 	if err != nil {

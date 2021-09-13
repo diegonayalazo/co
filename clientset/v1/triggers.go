@@ -56,7 +56,6 @@ func (c *triggerClient) GetPath(name string, opts metav1.GetOptions, path string
 
 	result, err := c.restClient.
 		Get().
-		AbsPath(path).
 		Namespace(c.ns).
 		Resource("triggers").
 		Name(name).
