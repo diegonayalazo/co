@@ -107,23 +107,28 @@ func (c *brokerClient) GetPath(name string, opts metav1.GetOptions, path string)
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).DoRaw(context.TODO())
 
-	accessToken, parseErr := parseJSONPath(result, "token-key", path)
+	//fmt.Printf("raw data:\n %q\n", string(result))
+
+	pathResult, parseErr := parseJSONPath(result, "token-key", path)
 	if parseErr != nil {
-		fmt.Println(fmt.Errorf("error parsing %q from %q: %v", path, string(result), parseErr))
+		fmt.Println(fmt.Errorf("\nerror parsing %q from:\n %q\n:  %v", path, string(result), parseErr))
 	}
 
-	fmt.Println(accessToken)
+	fmt.Printf("\njson-path returned: \n %q \n", pathResult)
 
-	return string(result), err
+	return pathResult, err
 }
 
 func parseJSONPath(input interface{}, name, template string) (string, error) {
 	j := jsonpath.New(name)
+	j.AllowMissingKeys(true)
 	buf := new(bytes.Buffer)
 	if err := j.Parse(template); err != nil {
+		fmt.Printf("\nerror parsing template: %q\n", template)
 		return "", err
 	}
 	if err := j.Execute(buf, input); err != nil {
+		fmt.Printf("\nerror executing input: %q\n", input)
 		return "", err
 	}
 	return buf.String(), nil

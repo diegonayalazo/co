@@ -40,16 +40,16 @@ func main() {
 	}
 	namespace := "default"
 	brokerName := "conformance-broker"
-	triggerName := "conformance-trigger"
-	uri := "http://events-counter-service.default.svc.cluster.local/events"
+	//triggerName := "conformance-trigger"
+	//uri := "http://events-counter-service.default.svc.cluster.local/events"
 	//listBroker(*clientSet, namespace)
 	createBroker(*clientSet, namespace, brokerName)
 	//kubectl get broker conformance-broker -o jsonpath='{.metadata.annotations.eventing\.knative\.dev/broker\.class}'
-	getBrokerPath(*clientSet, namespace, brokerName, "{.metadata.annotations.eventing\\.knative\\.dev/broker\\.class}")
+	getBrokerPath(*clientSet, namespace, brokerName, "{.metadata.name}")
 
 	//kubectl patch broker conformance-broker --type merge -p '{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}'
 
-	patchBroker(*clientSet, []byte(`{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}`), namespace, brokerName)
+	/*patchBroker(*clientSet, []byte(`{"metadata":{"annotations":{"eventing.knative.dev/broker.class":"mutable"}}}`), namespace, brokerName)
 
 	//kubectl patch broker conformance-broker --type merge -p '{"spec":{"config":{"apiVersion":"v1"}}}'
 
@@ -71,6 +71,7 @@ func main() {
 	//cleanup
 
 	deleteTrigger(*clientSet, namespace, triggerName)
-	deleteBroker(*clientSet, namespace, brokerName)
+	*/
+	//	deleteBroker(*clientSet, namespace, brokerName)
 
 }
