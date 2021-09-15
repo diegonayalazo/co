@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/jsonpath"
 )
 
 var kubeconfig string
@@ -20,7 +22,74 @@ func init() {
 	flag.Parse()
 }
 
+func parseJSONPath(input interface{}, name, template string) (string, error) {
+	j := jsonpath.New(name)
+	buf := new(bytes.Buffer)
+	if err := j.Parse(template); err != nil {
+		return "", err
+	}
+	if err := j.Execute(buf, input); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
 func main() {
+
+	var data = []byte(`{
+		"kind": "List",
+		"items":[
+		  {
+			"kind":"None",
+			"metadata":{
+			  "name":"127.0.0.1",
+			  "labels":{
+				"kubernetes.io/hostname":"127.0.0.1"
+			  }
+			},
+			"status":{
+			  "capacity":{"cpu":"4"},
+			  "ready": true,
+			  "addresses":[{"type": "LegacyHostIP", "address":"127.0.0.1"}]
+			}
+		  },
+		  {
+			"kind":"None",
+			"metadata":{
+			  "name":"127.0.0.2",
+			  "labels":{
+				"kubernetes.io/hostname":"127.0.0.2"
+			  }
+			},
+			"status":{
+			  "capacity":{"cpu":"8"},
+			  "ready": false,
+			  "addresses":[
+				{"type": "LegacyHostIP", "address":"127.0.0.2"},
+				{"type": "another", "address":"127.0.0.3"}
+			  ]
+			}
+		  }
+		],
+		"users":[
+		  {
+			"name": "myself",
+			"user": {}
+		  },
+		  {
+			"name": "e2e",
+			"user": {"username": "admin", "password": "secret"}
+			}
+		]
+	  }`)
+
+	accessToken, parseErr := parseJSONPath(data, "token-key", "{.status.address.url}")
+	if parseErr != nil {
+		fmt.Println(fmt.Errorf("error parsing token-key %q from %q: %v", "{.status.address.url}", string(data), parseErr))
+		return
+	}
+
+	fmt.Println(accessToken)
 
 	var config *rest.Config
 	var err error
