@@ -1,7 +1,9 @@
 package v1
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 
 	v1 "github.com/diegonayalazo/co/api/types/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -9,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/util/jsonpath"
 )
 
 type BrokerInterface interface {
@@ -104,5 +107,24 @@ func (c *brokerClient) GetPath(name string, opts metav1.GetOptions, path string)
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).DoRaw(context.TODO())
 
+	accessToken, parseErr := parseJSONPath(result, "token-key", path)
+	if parseErr != nil {
+		fmt.Println(fmt.Errorf("error parsing %q from %q: %v", path, string(result), parseErr))
+	}
+
+	fmt.Println(accessToken)
+
 	return string(result), err
+}
+
+func parseJSONPath(input interface{}, name, template string) (string, error) {
+	j := jsonpath.New(name)
+	buf := new(bytes.Buffer)
+	if err := j.Parse(template); err != nil {
+		return "", err
+	}
+	if err := j.Execute(buf, input); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
