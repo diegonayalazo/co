@@ -72,6 +72,6 @@ func main() {
 
 	deleteTrigger(*clientSet, namespace, triggerName)
 	*/
-	//	deleteBroker(*clientSet, namespace, brokerName)
+	deleteBroker(*clientSet, namespace, brokerName)
 
 }

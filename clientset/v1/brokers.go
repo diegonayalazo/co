@@ -3,6 +3,7 @@ package v1
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	v1 "github.com/diegonayalazo/co/api/types/v1"
@@ -107,29 +108,27 @@ func (c *brokerClient) GetPath(name string, opts metav1.GetOptions, path string)
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).DoRaw(context.TODO())
 
-	//fmt.Printf("raw data:\n %q\n", string(result))
+	fmt.Printf("raw json data:\n %q\n", string(result))
+	var data interface{}
+	json.Unmarshal(result, &data)
 
-	pathResult, parseErr := parseJSONPath(result, "token-key", path)
-	if parseErr != nil {
-		fmt.Println(fmt.Errorf("\nerror parsing %q from:\n %q\n:  %v", path, string(result), parseErr))
-	}
+	fmt.Printf("unmarshalled data:\n %q\n", data)
 
-	fmt.Printf("\njson-path returned: \n %q \n", pathResult)
+	fmt.Printf("template:\n %q\n", path)
 
-	return pathResult, err
-}
-
-func parseJSONPath(input interface{}, name, template string) (string, error) {
 	j := jsonpath.New(name)
 	j.AllowMissingKeys(true)
 	buf := new(bytes.Buffer)
-	if err := j.Parse(template); err != nil {
-		fmt.Printf("\nerror parsing template: %q\n", template)
+	if err := j.Parse(path); err != nil {
+		fmt.Printf("\nerror parsing template: %q\n", path)
 		return "", err
 	}
-	if err := j.Execute(buf, input); err != nil {
-		fmt.Printf("\nerror executing input: %q\n", input)
+	if err := j.Execute(buf, data); err != nil {
+		fmt.Printf("\nerror executing input: %q\n", data)
 		return "", err
 	}
-	return buf.String(), nil
+
+	fmt.Printf("\njson-path returned: \n %q \n", buf.String())
+
+	return buf.String(), err
 }
